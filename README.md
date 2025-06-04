@@ -1,2 +1,2 @@
-# sw-blog-pots-app-flask
+# SW Blog Pots (Flask)
 A flask web application to create, manage and delete social pots.
