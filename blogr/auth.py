@@ -35,13 +35,10 @@ def register():
 
 @bp.route('/login', methods = ('GET', 'POST'))
 def login():
-    print("entra a funcion login")
     if request.method == 'POST':
-        print("entra")
         email = request.form.get('email')
         password = request.form.get('password')    
-        print(email)
-        print(password)
+
 
         #Validando datos
         error = None
@@ -82,19 +79,26 @@ def login_required(view):
         return view(**kwargs)
     return wrapped_view
 
+#Editar perfil
+from werkzeug.utils import secure_filename
 
+def get_photo(id):
+    user = User.query.get_or_404(id)
+    photo = None
+    if photo != None:
+        photo = user.photo
+    
+    return photo
 
 @bp.route('/profile/<int:id>', methods=('GET', 'POST'))
 @login_required
 def profile(id):
     user = User.query.get_or_404(id)
+    photo = get_photo(id)
 
-    print("aqui entra inicial")
-    print(request.method)
+
     if request.method == 'POST':
-        print("entro aqui al post")
         user.username = request.form.get('username')
-        print("Nuevo", user.username)
         password = request.form.get('password')
 
         error = None
@@ -103,6 +107,10 @@ def profile(id):
         elif len(password) >0 and len(password) <6:
             error = 'La contraseña debe tener mas 5 caracteres'
 
+        if request.files['photo']:
+            photo = request.files['photo']
+            photo.save(f'blogr/static/media/{secure_filename(photo.filename)}')
+            user.photo = f'media/{secure_filename(photo.filename)}'
 
         if error is not None:
             flash(error)
@@ -113,5 +121,5 @@ def profile(id):
         flash(error)
 
 
-    return render_template('auth/profile.html', user = user)
+    return render_template('auth/profile.html', user = user, photo = photo)
 
