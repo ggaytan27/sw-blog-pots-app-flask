@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_ckeditor import CKEditor
 
 db = SQLAlchemy()
 
@@ -9,6 +10,8 @@ def create_app():
 
     app.config.from_object('config.Config')
     db.init_app(app)
+
+    ckeditor = CKEditor(app)
 
     #importando vistas
     from blogr import home
