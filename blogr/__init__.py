@@ -13,6 +13,10 @@ def create_app():
 
     ckeditor = CKEditor(app)
 
+    #Configuracion de Idioma Local
+    import locale
+    locale.setlocale(locale.LC_ALL, 'es_ES')
+
     #importando vistas
     from blogr import home
     app.register_blueprint(home.bp)
